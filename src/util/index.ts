@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 
-export {StatusCode} from "./status" ;
+export { StatusCode } from "./status";
+
+export { Api } from "./Api";
 
 export const responseClient = (res: Response, httpCode: number, code: number, message: string, data = {}) => {
 	const responseData = {

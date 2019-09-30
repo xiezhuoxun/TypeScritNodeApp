@@ -6,42 +6,23 @@ import lusca from "lusca";
 import mongo from "connect-mongo";
 import flash from "express-flash";
 import path from "path";
-import mongoose from "mongoose";
 import passport from "passport";
-import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 import * as mongodb from "./db/mongodb";
-
-const MongoStore = mongo(session);
-
-// Controllers (route handlers)
-import * as homeController from "./controllers/home";
-import * as userController from "./controllers/user";
-import * as apiController from "./controllers/api";
-import * as contactController from "./controllers/contact";
-
-
-// API keys and Passport configuration
+import routes from "./routes/index";
 import * as Utils from "./util";
-
-// Create Express server
+const MongoStore = mongo(session);
 const app = express();
 
+// Controllers (route handlers)
+// import * as homeController from "./controllers/home";
+// import * as userController from "./controllers/user";
+// import * as apiController from "./controllers/api";
+// import * as contactController from "./controllers/contact";
+
+// Create Express server
+
 mongodb.connect();
-
-// Connect to MongoDB
-// const mongoUrl = MONGODB_URI;
-// mongoose.Promise = bluebird;
-
-// mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(
-//     () => { 
-//         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
-//         console.log("数据库连接成功!");
-//     },
-// ).catch(err => {
-//     console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
-//     // process.exit();
-// });
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
@@ -69,23 +50,25 @@ app.use((req, res, next) => {
     next();
 });
 
+routes(app);
+
 app.use(function (req, res, next) {
-	if (req.method !== "POST") {
-		Utils.send2Client(res, 200, Utils.StatusCode.NO_POST);
-		return;
-	}
-	if (req.url !== "/") {
-		Utils.send2Client(res, 200, Utils.StatusCode.NO_URL);
-		return;
-	}
-	next();
+    if (req.method !== "POST") {
+        Utils.send2Client(res, 200, Utils.StatusCode.NO_POST);
+        return;
+    }
+    if (req.url !== "/") {
+        Utils.send2Client(res, 200, Utils.StatusCode.NO_URL);
+        return;
+    }
+    next();
 });
 
 app.use(
     express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
-app.get("/", homeController.index);
+// app.get("/", homeController.index);
 
 
 export default app;

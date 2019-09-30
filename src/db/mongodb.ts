@@ -12,8 +12,6 @@ mongoose.Promise = bluebird;
 
 // connect
 export const connect = () => {
-    // console.log('CONFIG.MONGODB.uri :', CONFIG.MONGODB.uri)
-
     // 连接数据库
     mongoose.connect(MONGODB_URI, {
         useCreateIndex: true,
